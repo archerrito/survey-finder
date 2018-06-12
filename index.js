@@ -1,5 +1,32 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const cookieSession = require('cookie-session');
+const passport = require('passport');
+const keys = require('./config/keys');
+//not assigning anything
+require('./models/User.js');
+require('./services/passport');
+
+mongoose.connect(keys.mongoURI);
+
+//const authRoutes = require('./routes/authRoutes');
 const app=express();
+
+//using middlewares, making minor adjustments to it
+app.use(
+    cookieSession({
+        //30 days
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        keys: [keys.cookieKey]
+    })
+);
+
+//tell passport to use cookies to handle authentication
+app.use(passport.initialize());
+app.use(passport.session());
+
+//return function, call with app object
+require('./routes/authRoutes')(app);
 
 //Deployment checklist
 // 1. port binding - heroku tells us which port our app will use, listen to port they tell us
@@ -13,11 +40,13 @@ const app=express();
 // req- object representing incoming request
 // res- ibject representing outgoing response
 //send - send some JSON back to who ever made request
-app.get('/', (req, res) => {
-    res.send({hi: 'there' });
-});
+// app.get('/', (req, res) => {
+//     res.send({bye: 'buddy' });
+// });
+
+//create new instance of google passport strategy
+//how to authenticate users for application
 
 //Dynamic port binding
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
-
