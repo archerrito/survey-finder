@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 //not assigning anything
 require('./models/User.js');
@@ -11,6 +12,10 @@ mongoose.connect(keys.mongoURI);
 
 //const authRoutes = require('./routes/authRoutes');
 const app=express();
+
+//any time request that has patch body, this middleware
+//will parse body and assign to property of incoming app object
+app.use(bodyParser.json())
 
 //using middlewares, making minor adjustments to it
 app.use(
@@ -27,6 +32,7 @@ app.use(passport.session());
 
 //return function, call with app object
 require('./routes/authRoutes')(app);
+require('./routes/billingRoutes')(app);
 
 //Deployment checklist
 // 1. port binding - heroku tells us which port our app will use, listen to port they tell us

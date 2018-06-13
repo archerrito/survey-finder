@@ -9,3 +9,10 @@ export const fetchUser = () => async dispatch => {
         //res output from axios
         dispatch({ type: FETCH_USER, payload: res.data })
     };
+//action creator, handle token send to backend
+export const handleToken = (token) => async dispatch => {
+    //post request, want to send info along with request to backend
+    const res = await axios.post('/api/stripe', token);
+    //dispatch action type to update user type in auth reducer
+    dispatch({ type: FETCH_USER, payload:res.data });
+}
