@@ -34,6 +34,20 @@ app.use(passport.session());
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
 
+//only run when at heroku
+if (process.env.NODE_ENV === 'production') {
+    //Express will serve up production assets like main.js, or main.css
+    //look into client/build directory to look if file, respond with that
+    app.use(express.static('client/build'));
+    //express serve up index.html file if doesn't recognize app
+    //just kick over to client side application
+    const path = require('path');
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
+
+}
+
 //Deployment checklist
 // 1. port binding - heroku tells us which port our app will use, listen to port they tell us
 // 2. Specify node environment - use specific version of node, so tell heroku which version
