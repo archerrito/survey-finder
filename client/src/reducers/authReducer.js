@@ -5,6 +5,7 @@ export default function(state = null, action) {
     console.log(action);
     //set case to watch for FETCH user to come into this reducer
     switch (action.type) {
+        //any time aciton comes with fetch_user, return action payload
         case FETCH_USER:
             //return user payload, as seen in data, either object of empty string for no user
             return action.payload || false;
