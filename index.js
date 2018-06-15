@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 //not assigning anything
 require('./models/User.js');
+require('./models/Survey.js');
 require('./services/passport');
 
 mongoose.connect(keys.mongoURI);
@@ -33,6 +34,7 @@ app.use(passport.session());
 //return function, call with app object
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 //only run when at heroku
 if (process.env.NODE_ENV === 'production') {
