@@ -18,3 +18,10 @@ export const handleToken = (token) => async dispatch => {
     //updates header credits, components re-render with new state
     dispatch({ type: FETCH_USER, payload:res.data });
 }
+
+export const submitSurvey = (values, history) => async dispatch => {
+    const res = await axios.post('/api/surveys', values);
+
+    history.push('/surveys');
+    dispatch({ type: FETCH_USER, payload: res.data })
+};

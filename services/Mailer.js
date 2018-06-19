@@ -1,5 +1,5 @@
-const sendGrid = require('sendgrid');
-const helper = sendrid.mail;
+const sendgrid = require('sendgrid');
+const helper = sendgrid.mail;
 const keys = require('../config/keys');
 
 //helper.Mail helper object that extends mal class from sendgrd library
@@ -13,7 +13,7 @@ class Mailer extends helper.Mail {
         this.from_email = new helper.Email('no-reply@surveyfinder.com');
         this.subject = subject;
         this.body = new helper.Content('text/html', content);
-        this recipients = this.formatAddresses(recipients);
+        this.recipients = this.formatAddresses(recipients);
         
         //built-in functionality of helper mail class
         this.addContent(this.body);

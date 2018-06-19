@@ -39,7 +39,7 @@ class Header extends Component {
     }
 }
 
-function mapStateToProps(auth) {
+function mapStateToProps({ auth }) {
     //auth piece of state in reducer index.js
     //assigned authreducer to auth property
     return { auth };
