@@ -9,7 +9,7 @@ class Mailer extends helper.Mail {
     constructor( { subject, recipients }, content) {
         super();
         //pass keys, gives object we can use to interact with API
-        this.sgApi = sendGrid(keys.sendGridKey);
+        this.sgApi = sendgrid(keys.sendGridKey);
         this.from_email = new helper.Email('no-reply@surveyfinder.com');
         this.subject = subject;
         this.body = new helper.Content('text/html', content);
