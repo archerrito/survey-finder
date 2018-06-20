@@ -1,19 +1,60 @@
+const _ = require('lodash');
+const Path = require('path-parser');
+const { URL } = require('url');
 const mongoose = require('mongoose');
 const requireLogin = require('../middlewares/requireLogin');
 const requireCredits = require('../middlewares/requireCredits');
 const Mailer = require('../services/Mailer');
 const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
+
 //can use model class to create instance of new survey
 const Survey = mongoose.model('surveys');
 
 module.exports = app => {
-    app.get('/api/surveys/thanks', (req, res) => {
+    app.get('/api/surveys/:surveyId/:choice', (req, res) => {
         res.send('Thanks for taking the survey!');
     });
 
     app.post('/api/surveys/webhooks', (req, res) => {
-        console.log(req.body);
+        // console.log(req.body);
+        // res.send({});
+
+        //p is object id we can 
+        const p = new Path('/api/aurveys/:surveyId/:choice');
+
+        _.chain(req.body)
+            //iterate over req.body(list of events)
+            //take destructured event and map over it
+            .map(({ email, url, }) => {
+                //will either be object or null
+                const match = p.test(new URL(url).pathname);
+                if (match) {
+                    return { email, surveyId: match.surveyId, choice: match.choice };
+                }
+            })
+            //iterate through events, remove any undefined elements by compacting
+            .compact()
+            //remove any duplicate records, uniqueness check
+            .uniqBy('email', 'surveyId')
+            .each(({ surveyId, email, choice }) => {
+                Survey.updateOne({
+                    _id: surveyId,
+                    recipients: {
+                        $elemMatch: { email: email, responded: false }
+                    }
+                }, {
+                    $inc: { [choice]: 1},
+                    $set: { 'recipients.$.responded': true },
+                    lastResponded: new Date()
+                }).exec();
+            })
+            .value();
+
+        
+
         res.send({});
+
+
     });
 
     app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
