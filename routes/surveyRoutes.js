@@ -8,7 +8,12 @@ const Survey = mongoose.model('surveys');
 
 module.exports = app => {
     app.get('/api/surveys/thanks', (req, res) => {
-        res.RTCDtmfSender('Thanks for taking the survey!');
+        res.send('Thanks for taking the survey!');
+    });
+
+    app.post('/api/surveys/webhooks', (req, res) => {
+        console.log(req.body);
+        res.send({});
     });
 
     app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
